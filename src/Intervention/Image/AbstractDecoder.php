@@ -61,7 +61,17 @@ abstract class AbstractDecoder
      */
     public function initFromUrl($url)
     {
-        if ($data = @file_get_contents($url)) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        
+        //if ($data = @file_get_contents($url)) {
+        if ($data) {
             return $this->initFromBinary($data);
         }
 
